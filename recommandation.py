@@ -5,19 +5,26 @@ import json
 from vectorizer import Vectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 from sklearn.feature_extraction.text import TfidfVectorizer
+from config import get_raw_file_path, get_data_file_path, get_pickle_file_path, get_result_file_path
+import sys
 
+if len(sys.argv) == 1:
+  sys.exit()
 
 # Load Raw Data Files
-df_users = pd.read_csv("./data/users.csv")
-df_jobs = pd.read_csv("./raw/Combined_Jobs_Final.csv")
+df_users = pd.read_csv(get_data_file_path('users'))
+df_jobs = pd.read_csv(get_raw_file_path('jobs'))
 
-u = 326
+u = int(sys.argv[1]) #326
 index = np.where(df_users['applicant_id'] == u)[0][0]
 user_query = df_users.iloc[[index]]
 
-vectorizer = Vectorizer.load('./pickles/vectorizer.pkl')
+print('[User Information -------------------------------]')
+print(df_users[df_users['applicant_id'] == u])
 
-tfidf_jobs = pickle.load(open("./pickles/tfidf_jobs.pkl", "rb"))
+vectorizer = Vectorizer.load(get_pickle_file_path('vectorizer'))
+
+tfidf_jobs = pickle.load(open(get_pickle_file_path('tfidf'), "rb"))
 
 tfidf_user = vectorizer.transform((user_query['text']))
 
@@ -39,5 +46,6 @@ top = sorted(range(len(cos_similarity_tfidf)), key=lambda i: cos_similarity_tfid
 list_scores = [cos_similarity_tfidf[i][0][0] for i in top]
 
 recommendations = get_recommendation(top,df_jobs, list_scores)
-recommendations.to_csv('./vectors/recommanded.csv', index = False)
+recommendations.to_csv(get_result_file_path('output'), index = False)
+print('[Recommendations -------------------------------]')
 print(recommendations)

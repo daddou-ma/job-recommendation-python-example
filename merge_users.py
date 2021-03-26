@@ -1,11 +1,12 @@
 import pandas as pd
 import numpy as np
 from clean_txt import clean_txt
+from config import get_raw_file_path, get_data_file_path
 
 # Load Raw Data Files
-df_job_view = pd.read_csv('./raw/Job_Views.csv')
-df_experience = pd.read_csv('./raw/Experience.csv')
-df_poi =  pd.read_csv('./raw/Positions_Of_Interest.csv', sep = ',')
+df_job_view = pd.read_csv(get_raw_file_path('users_views'))
+df_experience = pd.read_csv(get_raw_file_path('users_experiences'))
+df_poi =  pd.read_csv(get_raw_file_path('users_poi'), sep = ',')
 
 # Process Job View Data
 df_job_view = df_job_view[['Applicant.ID', 'Job.ID', 'Position', 'Company','City']]
@@ -46,4 +47,4 @@ output['text'] = output['job_view_text'].map(str) + output['experience_text'].ma
 output = output[['applicant_id','text']]
 output['text'] = output['text'].apply(clean_txt)
 
-output.to_csv('./data/users.csv')
+output.to_csv(get_data_file_path('users'))

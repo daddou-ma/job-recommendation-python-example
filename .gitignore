@@ -1,8 +1,7 @@
 raw/*
 data/*
 pickles/*
-vectors/*
-
+output/*
 .vscode
 
 __pycache__

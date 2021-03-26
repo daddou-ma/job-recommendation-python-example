@@ -1,9 +1,10 @@
 import pandas as pd
 import numpy as np
 from clean_txt import clean_txt
+from config import get_raw_file_path, get_data_file_path
 
 # Load Raw Data Files
-df_jobs = pd.read_csv("./raw/Combined_Jobs_Final.csv")
+df_jobs = pd.read_csv(get_raw_file_path('jobs'))
 
 # Process Job Data
 df_jobs = df_jobs[['Job.ID']+['Title']+['Position']+ ['Company']+['City']+['Employment.Type']+['Job.Description']]
@@ -28,4 +29,4 @@ df_jobs["text"] =  df_jobs["position"].map(str) + " " + df_jobs["company"].map(s
 df_jobs['text'] = df_jobs['text'].apply(clean_txt)
 df_jobs = df_jobs[['job_id', 'text']]
 
-df_jobs.to_csv('./data/jobs.csv')
+df_jobs.to_csv(get_data_file_path('jobs'))
